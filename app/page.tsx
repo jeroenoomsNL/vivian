@@ -153,6 +153,7 @@ export default function HomePage() {
               link="/vrijwilliger"
               linkText={t.home.section1Link}
               accent
+              image="/photos/02_batou_en_mamadou_300_ppi1_-_crop_small_0.jpg.webp"
             />
             <SectionCard
               icon="📅"
@@ -203,6 +204,7 @@ function SectionCard({
   link,
   linkText,
   accent,
+  image,
 }: {
   icon: string;
   title: string;
@@ -210,29 +212,45 @@ function SectionCard({
   link: string;
   linkText: string;
   accent?: boolean;
+  image?: string;
 }) {
   return (
     <div
-      className={`rounded-2xl p-8 flex flex-col gap-4 shadow-md hover:shadow-xl transition-shadow duration-200 ${
-        accent ? "bg-black text-white" : "bg-white text-gray-900"
+      className={`relative rounded-2xl p-8 flex flex-col gap-4 shadow-md hover:shadow-xl transition-shadow duration-200 overflow-hidden ${
+        accent ? "text-white" : "bg-white text-gray-900"
       }`}
     >
-      <span className="text-5xl" aria-hidden="true">
+      {accent && image && (
+        <>
+          <Image
+            src={image}
+            alt=""
+            fill
+            className="object-cover object-center"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-black/70" aria-hidden="true" />
+        </>
+      )}
+      {accent && !image && (
+        <div className="absolute inset-0 bg-black" aria-hidden="true" />
+      )}
+      <span className="relative text-5xl" aria-hidden="true">
         {icon}
       </span>
       <h3
-        className={`text-2xl font-bold ${accent ? "text-white" : "text-gray-900"}`}
+        className={`relative text-2xl font-bold ${accent ? "text-white" : "text-gray-900"}`}
       >
         {title}
       </h3>
       <p
-        className={`text-lg leading-relaxed flex-1 ${accent ? "text-gray-300" : "text-gray-600"}`}
+        className={`relative text-lg leading-relaxed flex-1 ${accent ? "text-gray-300" : "text-gray-600"}`}
       >
         {text}
       </p>
       <Link
         href={link}
-        className="inline-flex items-center gap-2 font-bold text-base mt-2"
+        className="relative inline-flex items-center gap-2 font-bold text-base mt-2"
         style={{ color: "rgb(248 79 55 / 90%)" }}
       >
         {linkText}

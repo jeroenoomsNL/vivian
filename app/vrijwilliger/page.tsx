@@ -114,8 +114,16 @@ export default function VolunteerPage() {
       </section>
 
       {/* Requirements */}
-      <section className="py-20 bg-black text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+      <section className="relative py-20 text-white overflow-hidden">
+        <Image
+          src="/photos/azc_2025_vrouwen.jpg.webp"
+          alt=""
+          fill
+          className="object-cover object-center"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-black/70" aria-hidden="true" />
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-extrabold mb-10">
             {t.volunteer.requirementsTitle}
           </h2>
