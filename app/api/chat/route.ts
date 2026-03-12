@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   if (!apiKey) {
     return NextResponse.json(
       { error: "OpenAI API key not configured" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     if (!Array.isArray(messages)) {
       return NextResponse.json(
         { error: "Invalid messages format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     console.error("OpenAI API error:", error);
     return NextResponse.json(
       { error: "Failed to get response from AI" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
