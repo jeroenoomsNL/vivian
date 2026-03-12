@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-vivian-orange: rgb(248 79 55 / 90%);
+  --color-vivian-orange-solid: #f84f37;
+  --color-vivian-orange-hover: rgb(230 60 38 / 90%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-vivian-orange: var(--color-vivian-orange);
+  --color-vivian-orange-solid: var(--color-vivian-orange-solid);
+  --color-vivian-orange-hover: var(--color-vivian-orange-hover);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(248 79 55 / 60%);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(248 79 55 / 90%);
+}
+
+/* Chat message animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 3px solid rgb(248 79 55 / 90%);
+  outline-offset: 2px;
+}
+
+/* Skip to content */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: rgb(248 79 55 / 90%);
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
