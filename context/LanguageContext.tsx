@@ -17,7 +17,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("nl");
 
-  const languages: Language[] = ["nl", "en", "ar", "tr", "fa"];
+  const languages: Language[] = ["nl", "en", "de", "es", "ar", "tr", "fa"];
   const toggleLanguage = () => {
     setLanguage((prev) => {
       const idx = languages.indexOf(prev);

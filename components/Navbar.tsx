@@ -9,6 +9,8 @@ import { Language } from "@/lib/translations";
 const LANGUAGES: { code: Language; flag: string; label: string }[] = [
   { code: "nl", flag: "🇳🇱", label: "Nederlands" },
   { code: "en", flag: "🇬🇧", label: "English" },
+  { code: "de", flag: "🇩🇪", label: "Deutsch" },
+  { code: "es", flag: "🇪🇸", label: "Español" },
   { code: "ar", flag: "🇦🇪", label: "العربية" },
   { code: "tr", flag: "🇹🇷", label: "Türkçe" },
   { code: "fa", flag: "🇮🇷", label: "فارسی" },

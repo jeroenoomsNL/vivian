@@ -221,7 +221,8 @@ export default function Chatbot() {
           ? text === t.chat.optionYes
           : text.toLowerCase().startsWith("j") ||
             text.toLowerCase().startsWith("y") ||
-            text.toLowerCase().startsWith("e") || // Evet (Turkish)
+            text.toLowerCase().startsWith("e") || // Evet (Turkish) / El sí (Spanish)
+            text.toLowerCase().startsWith("s") || // Sí (Spanish)
             text.startsWith("ن") || // نعم (Arabic)
             text.startsWith("ب"); // بله (Farsi)
 
@@ -642,6 +643,8 @@ export default function Chatbot() {
     const langMap: Record<string, string> = {
       nl: "nl-NL",
       en: "en-US",
+      de: "de-DE",
+      es: "es-ES",
       ar: "ar-SA",
       tr: "tr-TR",
       fa: "fa-IR",
