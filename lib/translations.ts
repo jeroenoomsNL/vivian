@@ -75,8 +75,17 @@ export const translations = {
       time3: "Voltijd 3 maanden",
       timeResponse: (time: string) =>
         `Geweldig! ${time} klinkt perfect. We gaan een passende rol voor je zoeken.`,
-      finalMessage:
-        "Op basis van jouw beschikbaarheid ga ik de beste matches zoeken. Heb je nog vragen?",
+      askExpertise: "Wat voor achtergrond of expertise breng jij mee?",
+      expertise1: "🗣️ Communicatie",
+      expertise2: "⚖️ Juridisch / Recht",
+      expertise3: "🏃 Sport / Activiteiten",
+      expertise4: "📚 Taal / Lesgeven",
+      expertiseResponse: (expertise: string) =>
+        `Geweldig dat je expertise hebt in ${expertise}! Op basis daarvan heb ik iets passends voor je gevonden. 🎯`,
+      expertiseSuggestEvent:
+        "Dit evenement sluit perfect aan bij jouw achtergrond:",
+      expertiseSuggestJob: "En deze vacature past perfect bij jou:",
+      finalMessage: "Heb je nog andere vragen? Ik help je graag verder! 😊",
       errorMessage: "Er is iets misgegaan. Probeer het opnieuw.",
       thinking: "Vivian is aan het typen...",
       poweredBy: "Mogelijk gemaakt door OpenAI",
@@ -367,8 +376,16 @@ export const translations = {
       time3: "Full-time 3 months",
       timeResponse: (time: string) =>
         `Great! ${time} sounds perfect. We will find a suitable role for you.`,
-      finalMessage:
-        "Based on your availability, I will find the best matches. Do you have any questions?",
+      askExpertise: "What background or expertise do you bring?",
+      expertise1: "🗣️ Communication",
+      expertise2: "⚖️ Legal / Law",
+      expertise3: "🏃 Sports / Activities",
+      expertise4: "📚 Language / Teaching",
+      expertiseResponse: (expertise: string) =>
+        `Great that you have a background in ${expertise}! Based on that, I found something that fits you well. 🎯`,
+      expertiseSuggestEvent: "This event perfectly matches your background:",
+      expertiseSuggestJob: "And this vacancy is a great fit for you:",
+      finalMessage: "Do you have any other questions? I am happy to help! 😊",
       errorMessage: "Something went wrong. Please try again.",
       thinking: "Vivian is typing...",
       poweredBy: "Powered by OpenAI",

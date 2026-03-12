@@ -10,6 +10,7 @@ type ChatStep =
   | "ask_knowledge"
   | "show_info"
   | "ask_time"
+  | "ask_expertise"
   | "open_chat";
 
 type MessageRole = "assistant" | "user";
@@ -22,6 +23,11 @@ interface ChatMessage {
   videoUrl?: string;
   videoTitle?: string;
   suggestions?: string[];
+  isCard?: boolean;
+  cardTitle?: string;
+  cardDescription?: string;
+  cardLink?: string;
+  cardType?: "event" | "job";
 }
 
 function generateId() {
@@ -252,8 +258,195 @@ export default function Chatbot() {
         await simulateTyping(() => {
           addMessage({
             role: "assistant",
-            content: t.chat.finalMessage,
+            content: t.chat.askExpertise,
+            suggestions: [
+              t.chat.expertise1,
+              t.chat.expertise2,
+              t.chat.expertise3,
+              t.chat.expertise4,
+            ],
           });
+        });
+        setStep("ask_expertise");
+      } else if (step === "ask_expertise") {
+        await simulateTyping(() => {
+          addMessage({
+            role: "assistant",
+            content: t.chat.expertiseResponse(text),
+          });
+        });
+        await new Promise((r) => setTimeout(r, 600));
+
+        // Map expertise to a relevant event or job card
+        const isComm =
+          text === t.chat.expertise1 ||
+          text.toLowerCase().includes("comm") ||
+          text.toLowerCase().includes("media");
+        const isLegal =
+          text === t.chat.expertise2 ||
+          text.toLowerCase().includes("jur") ||
+          text.toLowerCase().includes("recht") ||
+          text.toLowerCase().includes("law") ||
+          text.toLowerCase().includes("legal");
+        const isSport =
+          text === t.chat.expertise3 ||
+          text.toLowerCase().includes("sport") ||
+          text.toLowerCase().includes("activ");
+
+        // Candidates per expertise: [{location, title, description, link, type}]
+        type CardCandidate = {
+          location: string;
+          title: string;
+          description: string;
+          link: string;
+          type: "job" | "event";
+        };
+
+        const candidates: CardCandidate[] = isComm
+          ? [
+              {
+                location: language === "nl" ? "Den Haag" : "The Hague",
+                title:
+                  language === "nl"
+                    ? "Communicatiemedewerker"
+                    : "Communications Officer",
+                description:
+                  language === "nl"
+                    ? "24 uur/week · Den Haag · Communicatie"
+                    : "24 hrs/week · The Hague · Communications",
+                link: "/vacatures",
+                type: "job",
+              },
+              {
+                location: "Amsterdam",
+                title:
+                  language === "nl"
+                    ? "Coördinator Vrijwilligers"
+                    : "Volunteer Coordinator",
+                description:
+                  language === "nl"
+                    ? "32 uur/week · Amsterdam · Vrijwilligerswerk"
+                    : "32 hrs/week · Amsterdam · Volunteering",
+                link: "/vacatures",
+                type: "job",
+              },
+            ]
+          : isLegal
+            ? [
+                {
+                  location: "Rotterdam",
+                  title:
+                    language === "nl"
+                      ? "Juridisch Medewerker"
+                      : "Legal Officer",
+                  description:
+                    language === "nl"
+                      ? "40 uur/week · Rotterdam · Juridische Begeleiding"
+                      : "40 hrs/week · Rotterdam · Legal Support",
+                  link: "/vacatures",
+                  type: "job",
+                },
+                {
+                  location: "Amsterdam",
+                  title:
+                    language === "nl"
+                      ? "Introductiedag Vrijwilligers"
+                      : "Introduction Day Volunteers",
+                  description:
+                    language === "nl"
+                      ? "15 maart 2026 · Amsterdam · Training"
+                      : "March 15, 2026 · Amsterdam · Training",
+                  link: "/evenementen",
+                  type: "event",
+                },
+              ]
+            : isSport
+              ? [
+                  {
+                    location: "Utrecht",
+                    title:
+                      language === "nl"
+                        ? "Sportdag voor Vluchtelingen"
+                        : "Sports Day for Refugees",
+                    description:
+                      language === "nl"
+                        ? "5 april 2026 · Utrecht · Activiteit"
+                        : "April 5, 2026 · Utrecht · Activity",
+                    link: "/evenementen",
+                    type: "event",
+                  },
+                  {
+                    location: "Amsterdam",
+                    title:
+                      language === "nl"
+                        ? "Introductiedag Vrijwilligers"
+                        : "Introduction Day Volunteers",
+                    description:
+                      language === "nl"
+                        ? "15 maart 2026 · Amsterdam · Training"
+                        : "March 15, 2026 · Amsterdam · Training",
+                    link: "/evenementen",
+                    type: "event",
+                  },
+                ]
+              : [
+                  {
+                    location: language === "nl" ? "Den Haag" : "The Hague",
+                    title:
+                      language === "nl"
+                        ? "Training Taalbuddy"
+                        : "Language Buddy Training",
+                    description:
+                      language === "nl"
+                        ? "12 april 2026 · Den Haag · Training"
+                        : "April 12, 2026 · The Hague · Training",
+                    link: "/evenementen",
+                    type: "event",
+                  },
+                  {
+                    location: "Amsterdam",
+                    title:
+                      language === "nl"
+                        ? "Introductiedag Vrijwilligers"
+                        : "Introduction Day Volunteers",
+                    description:
+                      language === "nl"
+                        ? "15 maart 2026 · Amsterdam · Training"
+                        : "March 15, 2026 · Amsterdam · Training",
+                    link: "/evenementen",
+                    type: "event",
+                  },
+                ];
+
+        // Pick the candidate whose location best matches the detected city
+        const userCity = location?.toLowerCase() ?? "";
+        const best =
+          candidates.find(
+            (c) => userCity && c.location.toLowerCase().includes(userCity),
+          ) ?? candidates[0];
+
+        const suggestLabel =
+          best.type === "event"
+            ? t.chat.expertiseSuggestEvent
+            : t.chat.expertiseSuggestJob;
+
+        await simulateTyping(() => {
+          addMessage({ role: "assistant", content: suggestLabel });
+        });
+        await new Promise((r) => setTimeout(r, 400));
+        addMessage({
+          role: "assistant",
+          content: "",
+          isCard: true,
+          cardType: best.type,
+          cardTitle: best.title,
+          cardDescription: best.description,
+          cardLink: best.link,
+        });
+
+        await new Promise((r) => setTimeout(r, 800));
+        await simulateTyping(() => {
+          addMessage({ role: "assistant", content: t.chat.finalMessage });
         });
         setStep("open_chat");
       } else if (step === "open_chat") {
@@ -577,20 +770,22 @@ function MessageBubble({
       <div
         className={`flex flex-col gap-2 max-w-[85%] ${isAssistant ? "" : "items-end"}`}
       >
-        <div
-          className={`px-4 py-3 rounded-2xl text-base leading-relaxed ${
-            isAssistant
-              ? "bg-white text-gray-900 rounded-tl-sm shadow-sm"
-              : "text-white rounded-tr-sm"
-          }`}
-          style={
-            !isAssistant
-              ? { backgroundColor: "rgb(248 79 55 / 90%)" }
-              : undefined
-          }
-        >
-          {renderContent(message.content)}
-        </div>
+        {message.content && (
+          <div
+            className={`px-4 py-3 rounded-2xl text-base leading-relaxed ${
+              isAssistant
+                ? "bg-white text-gray-900 rounded-tl-sm shadow-sm"
+                : "text-white rounded-tr-sm"
+            }`}
+            style={
+              !isAssistant
+                ? { backgroundColor: "rgb(248 79 55 / 90%)" }
+                : undefined
+            }
+          >
+            {renderContent(message.content)}
+          </div>
+        )}
 
         {/* Video embed */}
         {message.isVideo && message.videoUrl && (
@@ -608,6 +803,38 @@ function MessageBubble({
               />
             </div>
           </div>
+        )}
+
+        {/* Suggestion card (event or job) */}
+        {message.isCard && message.cardTitle && (
+          <a
+            href={message.cardLink ?? "#"}
+            className="block rounded-xl overflow-hidden border-2 shadow-sm hover:shadow-md transition-shadow duration-200 no-underline"
+            style={{ borderColor: "rgb(248 79 55 / 90%)" }}
+          >
+            <div
+              className="px-3 py-1.5 text-white text-xs font-bold uppercase tracking-wide"
+              style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
+            >
+              {message.cardType === "event" ? "📅 Evenement" : "💼 Vacature"}
+            </div>
+            <div className="px-4 py-3 bg-white">
+              <p className="font-bold text-gray-900 text-base leading-snug">
+                {message.cardTitle}
+              </p>
+              {message.cardDescription && (
+                <p className="text-gray-500 text-sm mt-1">
+                  {message.cardDescription}
+                </p>
+              )}
+              <p
+                className="text-sm font-semibold mt-2"
+                style={{ color: "rgb(248 79 55 / 90%)" }}
+              >
+                Bekijk →
+              </p>
+            </div>
+          </a>
         )}
 
         {/* Suggestion buttons */}
