@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
 type ChatStep =
@@ -345,13 +346,14 @@ export default function Chatbot() {
             style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <span
-                  className="font-bold text-lg"
-                  style={{ color: "rgb(248 79 55 / 90%)" }}
-                >
-                  V
-                </span>
+              <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <Image
+                  src="/vivian.png"
+                  alt="Vivian"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <h2 className="font-bold text-lg leading-tight">
@@ -426,11 +428,16 @@ export default function Chatbot() {
             {isTyping && (
               <div className="flex items-center gap-2 chat-message">
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-sm"
-                  style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
+                  className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0"
                   aria-hidden="true"
                 >
-                  V
+                  <Image
+                    src="/vivian.png"
+                    alt="Vivian"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm max-w-xs">
                   <div
@@ -547,11 +554,16 @@ function MessageBubble({
     >
       {isAssistant && (
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-2 text-white font-bold text-sm self-end"
-          style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
+          className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 mr-2 self-end"
           aria-hidden="true"
         >
-          V
+          <Image
+            src="/vivian.png"
+            alt="Vivian"
+            width={32}
+            height={32}
+            className="w-full h-full object-cover"
+          />
         </div>
       )}
       <div

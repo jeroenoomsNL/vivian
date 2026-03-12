@@ -86,33 +86,16 @@ export default function HomePage() {
             {t.home.heroSubtitle}
           </p>
 
-          <Link
-            href="/vrijwilliger"
-            className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl text-white font-extrabold text-2xl shadow-2xl transition-all duration-200 hover:scale-105 focus:outline-none"
+          <button
+            onClick={() =>
+              globalThis.dispatchEvent(new CustomEvent("open-vivian"))
+            }
+            className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl text-white font-extrabold text-2xl shadow-2xl transition-all duration-200 hover:scale-105 focus:outline-none cursor-pointer"
             style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
-            aria-label={t.home.ctaButtonAriaLabel}
+            aria-label={t.home.heroCta}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-8 h-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-            {t.home.ctaButton}
-          </Link>
-
-          <p className="text-white/50 text-base mt-6">
-            ↘️ Of chat met Vivian rechtsonder in uw scherm
-          </p>
+            💬 {t.home.heroCta}
+          </button>
         </div>
 
         <div

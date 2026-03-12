@@ -20,6 +20,7 @@ export const translations = {
         "Samen helpen we vluchtelingen een nieuw thuis te vinden in Nederland",
       ctaButton: "Word vrijwilliger",
       ctaButtonAriaLabel: "Word vrijwilliger bij Vluchtelingenwerk Nederland",
+      heroCta: "Ontdek wat jij kan doen",
       locationDetected: "We hebben je locatie gedetecteerd",
       nearYou: "In de buurt van",
       section1Title: "Vrijwilligerswerk",
@@ -58,8 +59,7 @@ export const translations = {
         "Weet je wat het inhoudt om vrijwilliger te zijn bij Vluchtelingenwerk Nederland?",
       optionYes: "Ja",
       optionNo: "Nee",
-      knowledgeYesResponse:
-        "Top! Dan gaan we direct verder. 🎉",
+      knowledgeYesResponse: "Top! Dan gaan we direct verder. 🎉",
       knowledgeNoResponse:
         "Geen probleem! Laat me je meer vertellen over wat vrijwilligerswerk bij Vluchtelingenwerk inhoudt.",
       knowledgeInfo:
@@ -77,8 +77,7 @@ export const translations = {
         `Geweldig! ${time} klinkt perfect. We gaan een passende rol voor je zoeken.`,
       finalMessage:
         "Op basis van jouw beschikbaarheid ga ik de beste matches zoeken. Heb je nog vragen?",
-      errorMessage:
-        "Er is iets misgegaan. Probeer het opnieuw.",
+      errorMessage: "Er is iets misgegaan. Probeer het opnieuw.",
       thinking: "Vivian is aan het typen...",
       poweredBy: "Mogelijk gemaakt door OpenAI",
     },
@@ -314,8 +313,8 @@ export const translations = {
       heroSubtitle:
         "Together we help refugees find a new home in the Netherlands",
       ctaButton: "Become a volunteer",
-      ctaButtonAriaLabel:
-        "Become a volunteer at Vluchtelingenwerk Nederland",
+      ctaButtonAriaLabel: "Become a volunteer at Vluchtelingenwerk Nederland",
+      heroCta: "Discover what you can do",
       locationDetected: "We detected your location",
       nearYou: "Near",
       section1Title: "Volunteering",
