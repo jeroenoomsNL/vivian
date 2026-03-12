@@ -149,7 +149,7 @@ export default function VolunteerPage() {
               // Trigger chatbot open via custom event
               window.dispatchEvent(new CustomEvent("open-vivian"));
             }}
-            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold text-xl rounded-xl hover:bg-gray-100 transition-colors duration-200 focus:outline-none"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold text-xl rounded-xl hover:bg-gray-100 transition-colors duration-200 focus:outline-none cursor-pointer"
           >
             💬 {t.volunteer.ctaButton}
           </button>

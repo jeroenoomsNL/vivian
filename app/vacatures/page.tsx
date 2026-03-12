@@ -34,9 +34,7 @@ export default function JobsPage() {
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
             {t.jobs.title}
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300">
-            {t.jobs.subtitle}
-          </p>
+          <p className="text-xl md:text-2xl text-gray-300">{t.jobs.subtitle}</p>
         </div>
       </section>
 
@@ -52,7 +50,7 @@ export default function JobsPage() {
               <button
                 key={f.key}
                 onClick={() => setActiveFilter(f.key)}
-                className={`px-5 py-2.5 rounded-full font-semibold text-base transition-all duration-200 focus:outline-none ${
+                className={`px-5 py-2.5 rounded-full font-semibold text-base transition-all duration-200 focus:outline-none cursor-pointer ${
                   activeFilter === f.key
                     ? "text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -86,7 +84,7 @@ export default function JobsPage() {
                   className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-200 overflow-hidden"
                 >
                   <button
-                    className="w-full text-left p-6 focus:outline-none"
+                    className="w-full text-left p-6 focus:outline-none cursor-pointer"
                     onClick={() =>
                       setExpandedJob(expandedJob === job.id ? null : job.id)
                     }
@@ -154,7 +152,7 @@ export default function JobsPage() {
                         ))}
                       </ul>
                       <button
-                        className="px-8 py-3 rounded-xl text-white font-bold text-base transition-all duration-200 hover:opacity-90 focus:outline-none"
+                        className="px-8 py-3 rounded-xl text-white font-bold text-base transition-all duration-200 hover:opacity-90 focus:outline-none cursor-pointer"
                         style={{
                           backgroundColor: "rgb(248 79 55 / 90%)",
                         }}

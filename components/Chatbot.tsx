@@ -54,6 +54,12 @@ export default function Chatbot() {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    const handler = () => setIsOpen(true);
+    window.addEventListener("open-vivian", handler);
+    return () => window.removeEventListener("open-vivian", handler);
+  }, []);
+
   // Detect user location
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -78,20 +84,14 @@ export default function Chatbot() {
     }
   }, [isOpen, hasInit]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const addMessage = useCallback(
-    (msg: Omit<ChatMessage, "id">, delay = 0) => {
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          setMessages((prev) => [
-            ...prev,
-            { ...msg, id: generateId() },
-          ]);
-          resolve();
-        }, delay);
-      });
-    },
-    []
-  );
+  const addMessage = useCallback((msg: Omit<ChatMessage, "id">, delay = 0) => {
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        setMessages((prev) => [...prev, { ...msg, id: generateId() }]);
+        resolve();
+      }, delay);
+    });
+  }, []);
 
   const simulateTyping = useCallback(
     async (action: () => void, delay = 800) => {
@@ -100,7 +100,7 @@ export default function Chatbot() {
       setIsTyping(false);
       action();
     },
-    []
+    [],
   );
 
   const initChat = useCallback(async () => {
@@ -143,7 +143,7 @@ export default function Chatbot() {
       await addMessage({ role: "user", content: suggestion });
       await processUserInput(suggestion, true);
     },
-    [step, userName, t, language] // eslint-disable-line react-hooks/exhaustive-deps
+    [step, userName, t, language], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const handleSend = useCallback(async () => {
@@ -177,11 +177,10 @@ export default function Chatbot() {
         });
         setStep("ask_knowledge");
       } else if (step === "ask_knowledge") {
-        const isYes =
-          isSuggestion
-            ? text === t.chat.optionYes
-            : text.toLowerCase().startsWith("j") ||
-              text.toLowerCase().startsWith("y");
+        const isYes = isSuggestion
+          ? text === t.chat.optionYes
+          : text.toLowerCase().startsWith("j") ||
+            text.toLowerCase().startsWith("y");
 
         if (isYes) {
           await simulateTyping(() => {
@@ -286,7 +285,7 @@ export default function Chatbot() {
         }
       }
     },
-    [step, messages, t, language, addMessage, simulateTyping, userName]
+    [step, messages, t, language, addMessage, simulateTyping, userName],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -309,7 +308,7 @@ export default function Chatbot() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-full text-white font-bold text-base shadow-2xl transition-all duration-200 hover:scale-105 focus:outline-none"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-full text-white font-bold text-base shadow-2xl transition-all duration-200 hover:scale-105 focus:outline-none cursor-pointer"
           style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
           aria-label={t.chat.open}
         >
@@ -366,7 +365,7 @@ export default function Chatbot() {
             <div className="flex items-center gap-2">
               <button
                 onClick={resetChat}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
                 aria-label="Herstart gesprek"
                 title="Herstart gesprek"
               >
@@ -388,7 +387,7 @@ export default function Chatbot() {
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                className="p-2 hover:bg-white/20 rounded-lg transition-colors cursor-pointer"
                 aria-label={t.chat.close}
               >
                 <svg
@@ -417,7 +416,11 @@ export default function Chatbot() {
             aria-label="Chatberichten"
           >
             {messages.map((msg) => (
-              <MessageBubble key={msg.id} message={msg} onSuggestion={handleSuggestion} />
+              <MessageBubble
+                key={msg.id}
+                message={msg}
+                onSuggestion={handleSuggestion}
+              />
             ))}
 
             {isTyping && (
@@ -484,7 +487,7 @@ export default function Chatbot() {
               <button
                 onClick={handleSend}
                 disabled={isTyping || !input.trim()}
-                className="px-4 py-3 rounded-xl text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none"
+                className="px-4 py-3 rounded-xl text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none cursor-pointer"
                 style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
                 aria-label={t.chat.send}
               >
@@ -534,7 +537,7 @@ function MessageBubble({
         </strong>
       ) : (
         <span key={i}>{part}</span>
-      )
+      ),
     );
   };
 
@@ -572,7 +575,10 @@ function MessageBubble({
         {/* Video embed */}
         {message.isVideo && message.videoUrl && (
           <div className="w-full rounded-xl overflow-hidden shadow-md">
-            <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
+            <div
+              className="relative w-full"
+              style={{ paddingBottom: "56.25%" }}
+            >
               <iframe
                 src={message.videoUrl}
                 title={message.videoTitle ?? "Video"}
@@ -591,7 +597,7 @@ function MessageBubble({
               <button
                 key={s}
                 onClick={() => onSuggestion(s)}
-                className="px-4 py-2 rounded-full border-2 text-base font-semibold transition-all duration-200 hover:text-white focus:outline-none"
+                className="px-4 py-2 rounded-full border-2 text-base font-semibold transition-all duration-200 hover:text-white focus:outline-none cursor-pointer"
                 style={{
                   borderColor: "rgb(248 79 55 / 90%)",
                   color: "rgb(248 79 55 / 90%)",

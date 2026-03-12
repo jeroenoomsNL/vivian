@@ -62,7 +62,7 @@ export default function EventsPage() {
               <button
                 key={f.key}
                 onClick={() => setActiveFilter(f.key)}
-                className={`px-5 py-2.5 rounded-full font-semibold text-base transition-all duration-200 focus:outline-none ${
+                className={`px-5 py-2.5 rounded-full font-semibold text-base transition-all duration-200 focus:outline-none cursor-pointer ${
                   activeFilter === f.key
                     ? "text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -139,7 +139,7 @@ export default function EventsPage() {
                       {event.description}
                     </p>
                     <button
-                      className="mt-auto w-full py-3 rounded-xl text-white font-bold text-base transition-all duration-200 hover:opacity-90 focus:outline-none"
+                      className="mt-auto w-full py-3 rounded-xl text-white font-bold text-base transition-all duration-200 hover:opacity-90 focus:outline-none cursor-pointer"
                       style={{ backgroundColor: "rgb(248 79 55 / 90%)" }}
                     >
                       {t.events.register}
