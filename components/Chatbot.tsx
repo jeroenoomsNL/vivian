@@ -220,7 +220,10 @@ export default function Chatbot() {
         const isYes = isSuggestion
           ? text === t.chat.optionYes
           : text.toLowerCase().startsWith("j") ||
-            text.toLowerCase().startsWith("y");
+            text.toLowerCase().startsWith("y") ||
+            text.toLowerCase().startsWith("e") || // Evet (Turkish)
+            text.startsWith("ن") || // نعم (Arabic)
+            text.startsWith("ب"); // بله (Farsi)
 
         if (isYes) {
           await simulateTyping(() => {
@@ -636,7 +639,14 @@ export default function Chatbot() {
     }
 
     const recognition = new SpeechRecognitionAPI();
-    recognition.lang = language === "nl" ? "nl-NL" : "en-US";
+    const langMap: Record<string, string> = {
+      nl: "nl-NL",
+      en: "en-US",
+      ar: "ar-SA",
+      tr: "tr-TR",
+      fa: "fa-IR",
+    };
+    recognition.lang = langMap[language] ?? "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
     recognitionRef.current = recognition;

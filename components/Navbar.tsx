@@ -1,13 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import { Language } from "@/lib/translations";
+
+const LANGUAGES: { code: Language; flag: string; label: string }[] = [
+  { code: "nl", flag: "🇳🇱", label: "Nederlands" },
+  { code: "en", flag: "🇬🇧", label: "English" },
+  { code: "ar", flag: "🇦🇪", label: "العربية" },
+  { code: "tr", flag: "🇹🇷", label: "Türkçe" },
+  { code: "fa", flag: "🇮🇷", label: "فارسی" },
+];
 
 export default function Navbar() {
-  const { t, toggleLanguage } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRefDesktop = useRef<HTMLDivElement>(null);
+  const langRefMobile = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as Node;
+      if (
+        langRefDesktop.current &&
+        !langRefDesktop.current.contains(target) &&
+        langRefMobile.current &&
+        !langRefMobile.current.contains(target)
+      ) {
+        setLangOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const currentLang = LANGUAGES.find((l) => l.code === language)!;
 
   return (
     <nav
@@ -40,25 +70,111 @@ export default function Navbar() {
             <NavLink href="/evenementen">{t.nav.events}</NavLink>
             <NavLink href="/vacatures">{t.nav.jobs}</NavLink>
 
-            {/* Language Toggle */}
-            <button
-              onClick={toggleLanguage}
-              className="ml-4 px-4 py-2 rounded-full border-2 border-gray-800 text-gray-800 font-bold text-base hover:bg-gray-800 hover:text-white transition-colors duration-200 focus:outline-none cursor-pointer"
-              aria-label={t.nav.languageLabel}
-            >
-              {t.nav.language}
-            </button>
+            {/* Language Popover */}
+            <div className="relative ml-4" ref={langRefDesktop}>
+              <button
+                onClick={() => setLangOpen((o) => !o)}
+                className="flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-800 text-gray-800 font-bold text-base hover:bg-gray-800 hover:text-white transition-colors duration-200 focus:outline-none cursor-pointer"
+                aria-label={t.nav.languageLabel}
+                aria-expanded={langOpen}
+              >
+                <span>{currentLang.flag}</span>
+                <span>{currentLang.code.toUpperCase()}</span>
+                <svg
+                  className={`w-4 h-4 transition-transform ${langOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code);
+                        setLangOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
+                        lang.code === language
+                          ? "text-white"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                      style={
+                        lang.code === language
+                          ? { backgroundColor: "rgb(248 79 55 / 90%)" }
+                          : {}
+                      }
+                    >
+                      <span className="text-lg">{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile: Language + Hamburger */}
           <div className="md:hidden flex items-center gap-3">
-            <button
-              onClick={toggleLanguage}
-              className="px-3 py-1.5 rounded-full border-2 border-gray-800 text-gray-800 font-bold text-sm hover:bg-gray-800 hover:text-white transition-colors cursor-pointer"
-              aria-label={t.nav.languageLabel}
-            >
-              {t.nav.language}
-            </button>
+            <div className="relative" ref={langRefMobile}>
+              <button
+                onClick={() => setLangOpen((o) => !o)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-2 border-gray-800 text-gray-800 font-bold text-sm hover:bg-gray-800 hover:text-white transition-colors cursor-pointer"
+                aria-label={t.nav.languageLabel}
+                aria-expanded={langOpen}
+              >
+                <span>{currentLang.flag}</span>
+                <span>{currentLang.code.toUpperCase()}</span>
+                <svg
+                  className={`w-3.5 h-3.5 transition-transform ${langOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code);
+                        setLangOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer ${
+                        lang.code === language
+                          ? "text-white"
+                          : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                      style={
+                        lang.code === language
+                          ? { backgroundColor: "rgb(248 79 55 / 90%)" }
+                          : {}
+                      }
+                    >
+                      <span className="text-lg">{lang.flag}</span>
+                      <span>{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"

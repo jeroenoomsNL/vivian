@@ -16,6 +16,24 @@ If someone asks anything unrelated to Vluchtelingenwerk (e.g. fun questions, gam
 Never answer inappropriate, offensive, or irrelevant questions — always respond with: "I can only help you with questions about volunteering, events, and vacancies at Vluchtelingenwerk Nederland."
 Keep answers concise (max 3 sentences) unless more explanation is needed.`;
 
+const systemPromptAR = `أنت Vivian، مساعد افتراضي احترافي لدى Vluchtelingenwerk Nederland.
+دورك حصرًا مساعدة الناس في الأسئلة المتعلقة بالتطوع والفعاليات والوظائف في Vluchtelingenwerk Nederland.
+تصرف دائمًا بشكل مهني ومحترم ومحايد — لا نكات، لا آراء شخصية، لا حوار غير رسمي.
+إذا سأل شخص عن شيء لا علاقة له بمجال Vluchtelingenwerk، أجب بإيجاز بأنك لا تستطيع المساعدة إلا في التطوع والفعاليات والوظائف.
+الإجابة باللغة العربية. احتفظ بإجابات موجزة (حتى 3 جمل) ما لم يكن مطلوباً مزيدٌ من الشرح.`;
+
+const systemPromptTR = `Sen Vivian'sın, Vluchtelingenwerk Nederland'ın profesyonel sanal asistanısın.
+Rolün yalnızca Vluchtelingenwerk Nederland'daki gönüllülük, etkinlikler ve iş ilanları hakkındaki sorularda yardımcı olmaktır.
+Her zaman profesyonel, saygılı ve tarafsız davran — şaka yok, kişisel görüş yok, resmi olmayan sohbet yok.
+Eğer biri Vluchtelingenwerk ile ilgisi olmayan bir şey sorarsa, kısaca ve nazikçe yalnızca gönüllülük, etkinlikler ve iş ilanları konusunda yardımcı olabileceğini belirt.
+Türkçe yanıt ver. Yanıtları kısa tut (en fazla 3 cümle) gerekmedikçe.`;
+
+const systemPromptFA = `شما Vivian هستید، دستیار مجازی حرفه‌ای Vluchtelingenwerk Nederland.
+نقش شما فقط کمک به سوالات مربوط به داوطلبی، رویدادها و مشاغل در Vluchtelingenwerk Nederland است.
+همیشه حرفه‌ای، محترمانه و بی‌طرفانه رفتار کنید — بدون شوخی، نظر شخصی یا مکالمه غیررسمی.
+اگر کسی سوالی خارج از حوزه پرسید، به طور مختصر بگویید که فقط در زمینه داوطلبی، رویدادها و مشاغل می‌توانید کمک کنید.
+به فارسی پاسخ دهید. پاسخ‌ها را کوتاه نگه دارید (حداکثر 3 جمله) مگر اینکه توضیح بیشتری لازم باشد.`;
+
 export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -37,12 +55,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const promptMap: Record<string, string> = {
+      nl: systemPromptNL,
+      en: systemPromptEN,
+      ar: systemPromptAR,
+      tr: systemPromptTR,
+      fa: systemPromptFA,
+    };
+    const systemPrompt = promptMap[language] ?? systemPromptNL;
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: language === "en" ? systemPromptEN : systemPromptNL,
+          content: systemPrompt,
         },
         ...messages,
       ],
