@@ -716,9 +716,6 @@ export default function Chatbot() {
                 </svg>
               </button>
             </div>
-            <p className="text-xs text-gray-400 text-center mt-2">
-              {t.chat.poweredBy}
-            </p>
           </div>
         </div>
       )}

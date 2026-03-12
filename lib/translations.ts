@@ -88,7 +88,6 @@ export const translations = {
       finalMessage: "Heb je nog andere vragen? Ik help je graag verder! 😊",
       errorMessage: "Er is iets misgegaan. Probeer het opnieuw.",
       thinking: "Vivian is aan het typen...",
-      poweredBy: "Mogelijk gemaakt door OpenAI",
     },
 
     // Volunteer page
@@ -388,7 +387,6 @@ export const translations = {
       finalMessage: "Do you have any other questions? I am happy to help! 😊",
       errorMessage: "Something went wrong. Please try again.",
       thinking: "Vivian is typing...",
-      poweredBy: "Powered by OpenAI",
     },
     volunteer: {
       title: "Volunteering",
