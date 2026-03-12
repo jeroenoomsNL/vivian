@@ -330,15 +330,15 @@ export default function Chatbot() {
         const candidates: CardCandidate[] = isComm
           ? [
               {
-                location: language === "nl" ? "Den Haag" : "The Hague",
+                location: "Amsterdam",
                 title:
                   language === "nl"
                     ? "Communicatiemedewerker"
                     : "Communications Officer",
                 description:
                   language === "nl"
-                    ? "24 uur/week · Den Haag · Communicatie"
-                    : "24 hrs/week · The Hague · Communications",
+                    ? "24 uur/week · Amsterdam · Communicatie"
+                    : "24 hrs/week · Amsterdam · Communications",
                 link: "/vacatures",
                 type: "job",
               },
@@ -359,15 +359,15 @@ export default function Chatbot() {
           : isLegal
             ? [
                 {
-                  location: "Rotterdam",
+                  location: "Amsterdam",
                   title:
                     language === "nl"
                       ? "Juridisch Medewerker"
                       : "Legal Officer",
                   description:
                     language === "nl"
-                      ? "40 uur/week · Rotterdam · Juridische Begeleiding"
-                      : "40 hrs/week · Rotterdam · Legal Support",
+                      ? "40 uur/week · Amsterdam · Juridische Begeleiding"
+                      : "40 hrs/week · Amsterdam · Legal Support",
                   link: "/vacatures",
                   type: "job",
                 },
@@ -388,15 +388,15 @@ export default function Chatbot() {
             : isSport
               ? [
                   {
-                    location: "Utrecht",
+                    location: "Amsterdam",
                     title:
                       language === "nl"
                         ? "Sportdag voor Vluchtelingen"
                         : "Sports Day for Refugees",
                     description:
                       language === "nl"
-                        ? "5 april 2026 · Utrecht · Activiteit"
-                        : "April 5, 2026 · Utrecht · Activity",
+                        ? "5 april 2026 · Amsterdam · Activiteit"
+                        : "April 5, 2026 · Amsterdam · Activity",
                     link: "/evenementen",
                     type: "event",
                   },
@@ -416,15 +416,15 @@ export default function Chatbot() {
                 ]
               : [
                   {
-                    location: language === "nl" ? "Den Haag" : "The Hague",
+                    location: "Amsterdam",
                     title:
                       language === "nl"
                         ? "Training Taalbuddy"
                         : "Language Buddy Training",
                     description:
                       language === "nl"
-                        ? "12 april 2026 · Den Haag · Training"
-                        : "April 12, 2026 · The Hague · Training",
+                        ? "12 april 2026 · Amsterdam · Training"
+                        : "April 12, 2026 · Amsterdam · Training",
                     link: "/evenementen",
                     type: "event",
                   },
@@ -475,6 +475,104 @@ export default function Chatbot() {
         });
         setStep("open_chat");
       } else if (step === "open_chat") {
+        const lower = text.toLowerCase();
+        const asksEvents =
+          /evenement|activiteit|bijeenkomst|agenda|event|activit|training/.test(
+            lower,
+          );
+        const asksJobs =
+          /vacatur|baan\b|functie|werken\b|job\b|vacancy|vacancies|openstaande/.test(
+            lower,
+          );
+
+        if (asksEvents || asksJobs) {
+          setIsTyping(true);
+          await new Promise((r) => setTimeout(r, 800));
+          setIsTyping(false);
+
+          const introLabel = asksEvents
+            ? t.chat.suggestEvents
+            : t.chat.suggestJobs;
+          await addMessage({ role: "assistant", content: introLabel });
+
+          const nl = language === "nl";
+          const cards = asksEvents
+            ? [
+                {
+                  title: nl
+                    ? "Introductiedag Vrijwilligers"
+                    : "Introduction Day Volunteers",
+                  description: nl
+                    ? "15 maart 2026 · Amsterdam · Training"
+                    : "March 15, 2026 · Amsterdam · Training",
+                  link: "/evenementen",
+                  type: "event" as const,
+                },
+                {
+                  title: nl
+                    ? "Sportdag voor Vluchtelingen"
+                    : "Sports Day for Refugees",
+                  description: nl
+                    ? "5 april 2026 · Amsterdam · Activiteit"
+                    : "April 5, 2026 · Amsterdam · Activity",
+                  link: "/evenementen",
+                  type: "event" as const,
+                },
+                {
+                  title: nl ? "Training Taalbuddy" : "Language Buddy Training",
+                  description: nl
+                    ? "12 april 2026 · Amsterdam · Training"
+                    : "April 12, 2026 · Amsterdam · Training",
+                  link: "/evenementen",
+                  type: "event" as const,
+                },
+              ]
+            : [
+                {
+                  title: nl
+                    ? "Communicatiemedewerker"
+                    : "Communications Officer",
+                  description: nl
+                    ? "24 uur/week · Amsterdam · Communicatie"
+                    : "24 hrs/week · Amsterdam · Communications",
+                  link: "/vacatures",
+                  type: "job" as const,
+                },
+                {
+                  title: nl ? "Juridisch Medewerker" : "Legal Officer",
+                  description: nl
+                    ? "40 uur/week · Amsterdam · Juridische Begeleiding"
+                    : "40 hrs/week · Amsterdam · Legal Support",
+                  link: "/vacatures",
+                  type: "job" as const,
+                },
+                {
+                  title: nl
+                    ? "Coördinator Vrijwilligers"
+                    : "Volunteer Coordinator",
+                  description: nl
+                    ? "32 uur/week · Amsterdam · Vrijwilligerswerk"
+                    : "32 hrs/week · Amsterdam · Volunteering",
+                  link: "/vacatures",
+                  type: "job" as const,
+                },
+              ];
+
+          for (const card of cards) {
+            await new Promise((r) => setTimeout(r, 350));
+            addMessage({
+              role: "assistant",
+              content: "",
+              isCard: true,
+              cardType: card.type,
+              cardTitle: card.title,
+              cardDescription: card.description,
+              cardLink: card.link,
+            });
+          }
+          return;
+        }
+
         // Use OpenAI for open-ended chat
         setIsTyping(true);
         try {
