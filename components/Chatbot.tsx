@@ -4,6 +4,29 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
+interface SpeechRecognitionResult {
+  transcript: string;
+}
+interface SpeechRecognitionResultList {
+  readonly length: number;
+  [index: number]: { [index: number]: SpeechRecognitionResult };
+}
+interface SpeechRecognitionEvt {
+  results: SpeechRecognitionResultList;
+}
+interface SpeechRecognitionInstance {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onstart: (() => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+  onresult: ((event: SpeechRecognitionEvt) => void) | null;
+  start(): void;
+  stop(): void;
+}
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
 type ChatStep =
   | "greeting"
   | "ask_name"
@@ -45,6 +68,8 @@ export default function Chatbot() {
   const [location, setLocation] = useState<string | null>(null);
   const [hasInit, setHasInit] = useState(false);
   const [locationShown, setLocationShown] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -64,8 +89,8 @@ export default function Chatbot() {
 
   useEffect(() => {
     const handler = () => setIsOpen(true);
-    window.addEventListener("open-vivian", handler);
-    return () => window.removeEventListener("open-vivian", handler);
+    globalThis.addEventListener("open-vivian", handler);
+    return () => globalThis.removeEventListener("open-vivian", handler);
   }, []);
 
   // Show location message whenever it resolves and the chat is open
@@ -85,7 +110,7 @@ export default function Chatbot() {
 
   // Detect user location
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (globalThis.window === undefined) return;
 
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
@@ -497,6 +522,39 @@ export default function Chatbot() {
     }
   };
 
+  const handleMic = useCallback(() => {
+    type GlobalWithSpeech = {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const g = globalThis as unknown as GlobalWithSpeech;
+    const SpeechRecognitionAPI =
+      g.SpeechRecognition ?? g.webkitSpeechRecognition;
+    if (!SpeechRecognitionAPI) return;
+
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      return;
+    }
+
+    const recognition = new SpeechRecognitionAPI();
+    recognition.lang = language === "nl" ? "nl-NL" : "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognitionRef.current = recognition;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+    recognition.onresult = (event: SpeechRecognitionEvt) => {
+      const transcript = event.results[0][0].transcript;
+      setInput((prev) => (prev ? prev + " " + transcript : transcript));
+      inputRef.current?.focus();
+    };
+
+    recognition.start();
+  }, [isListening, language]);
+
   const resetChat = () => {
     setMessages([]);
     setStep("greeting");
@@ -686,12 +744,43 @@ export default function Chatbot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={t.chat.inputPlaceholder}
+                placeholder={
+                  isListening ? t.chat.micStart : t.chat.inputPlaceholder
+                }
                 className="flex-1 px-4 py-3 rounded-xl border border-gray-300 text-base focus:outline-none focus:border-orange-400 bg-gray-50"
                 style={{ fontSize: "1rem" }}
                 disabled={isTyping}
                 aria-disabled={isTyping}
               />
+              <button
+                onClick={handleMic}
+                disabled={isTyping}
+                className="px-3 py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none cursor-pointer"
+                style={{
+                  backgroundColor: isListening
+                    ? "rgb(248 79 55 / 90%)"
+                    : "#f3f4f6",
+                  color: isListening ? "white" : "#374151",
+                }}
+                aria-label={t.chat.micButton}
+                title={t.chat.micButton}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4M12 3a4 4 0 014 4v4a4 4 0 01-8 0V7a4 4 0 014-4z"
+                  />
+                </svg>
+              </button>
               <button
                 onClick={handleSend}
                 disabled={isTyping || !input.trim()}
