@@ -15,7 +15,7 @@ export const translations = {
 
     // Homepage
     home: {
-      heroTitle: "Maak een verschil",
+      heroTitle: "Maak het verschil",
       heroSubtitle:
         "Samen helpen we vluchtelingen een nieuw thuis te vinden in Nederland",
       ctaButton: "Word vrijwilliger",

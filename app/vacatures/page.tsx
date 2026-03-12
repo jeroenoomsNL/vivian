@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function JobsPage() {
@@ -23,14 +24,17 @@ export default function JobsPage() {
   return (
     <>
       {/* Hero */}
-      <section
-        className="py-24 text-white text-center"
-        style={{
-          background:
-            "linear-gradient(135deg, #000000 0%, #1a1a1a 60%, #2d0c06 100%)",
-        }}
-      >
-        <div className="max-w-4xl mx-auto px-4">
+      <section className="relative py-52 text-white text-center overflow-hidden">
+        <Image
+          src="/photos/moeder-en-kinderen-in-azc-weert.jpg.webp"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
+        <div className="relative max-w-4xl mx-auto px-4">
           <h1 className="text-5xl md:text-6xl font-extrabold mb-6">
             {t.jobs.title}
           </h1>

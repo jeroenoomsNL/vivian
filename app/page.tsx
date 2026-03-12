@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { useEffect, useState } from "react";
 
@@ -28,22 +29,20 @@ export default function HomePage() {
     <>
       {/* Hero Section */}
       <section
-        className="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4"
-        style={{
-          background:
-            "linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d0c06 100%)",
-        }}
+        className="relative min-h-[64vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden"
         aria-label="Hero sectie"
       >
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-            backgroundSize: "40px 40px",
-          }}
+        {/* Background image */}
+        <Image
+          src="/photos/poster.webp"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
           aria-hidden="true"
         />
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
 
         {location && (
           <div
