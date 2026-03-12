@@ -38,6 +38,7 @@ export default function Chatbot() {
   const [userName, setUserName] = useState("");
   const [location, setLocation] = useState<string | null>(null);
   const [hasInit, setHasInit] = useState(false);
+  const [locationShown, setLocationShown] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,6 +62,21 @@ export default function Chatbot() {
     return () => window.removeEventListener("open-vivian", handler);
   }, []);
 
+  // Show location message whenever it resolves and the chat is open
+  useEffect(() => {
+    if (location && isOpen && hasInit && !locationShown) {
+      setLocationShown(true);
+      setMessages((prev) => [
+        {
+          id: generateId(),
+          role: "assistant",
+          content: `${t.chat.locationText} **${location}**`,
+        },
+        ...prev,
+      ]);
+    }
+  }, [location, isOpen, hasInit]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Detect user location
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -81,6 +97,7 @@ export default function Chatbot() {
   useEffect(() => {
     if (isOpen && !hasInit) {
       setHasInit(true);
+      setLocationShown(false);
       initChat();
     }
   }, [isOpen, hasInit]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -105,15 +122,6 @@ export default function Chatbot() {
   );
 
   const initChat = useCallback(async () => {
-    // Show location if detected
-    if (location) {
-      await addMessage({
-        role: "assistant",
-        content: `${t.chat.locationText} **${location}**`,
-      });
-      await new Promise((r) => setTimeout(r, 400));
-    }
-
     // Greeting
     setIsTyping(true);
     await new Promise((r) => setTimeout(r, 900));
